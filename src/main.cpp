@@ -1,5 +1,3 @@
-// #include "ui/RDButton.hpp"
-// #include "RDDailyNode.hpp"
 #include "ui/RDStatsNode.hpp"
 #include "ui/RDMainButton.hpp"
 
@@ -12,6 +10,8 @@
 #include <Geode/ui/BasedButtonSprite.hpp>
 
 #include <fmt/core.h>
+#include <string>
+
 #define MAX_SECRET_COINS 164
 
 std::string getPathString(int n) {
@@ -30,31 +30,18 @@ std::string getPathString(int n) {
 	}
 }
 
-
 class $modify(CrazyLayer, MenuLayer) {
 	static void onModify(auto& self) {
-        self.setHookPriority("MenuLayer::init", INT_MIN/2 + 1); // making sure its run before pages api
+        (void)self.setHookPriority("MenuLayer::init", INT_MIN / 2 + 1); // making sure it's run before pages api
     }
 
 	void onHideMenu(CCObject* sender) {
 		if (!as<CCMenuItemToggler*>(sender)->isOn()) {
 			this->getChildByID("redash-menu"_spr)->getChildByID("main-menu"_spr)->setVisible(false);
 			this->getChildByID("redash-menu"_spr)->getChildByID("dailies-menu"_spr)->setVisible(false);
-			// this->getChildByID("bottom-menu")->setVisible(false);
-			// this->getChildByID("bottom-menu-bg"_spr)->setVisible(false);
-			// this->getChildByID("right-side-menu")->setVisible(false);
-			// this->getChildByID("profile-menu")->setVisible(false);
-			// this->getChildByID("close-menu")->setVisible(false);
-			// this->getChildByID("player-username")->setVisible(false);
 		} else {
 			this->getChildByID("redash-menu"_spr)->getChildByID("main-menu"_spr)->setVisible(true);
 			this->getChildByID("redash-menu"_spr)->getChildByID("dailies-menu"_spr)->setVisible(true);
-			// this->getChildByID("bottom-menu")->setVisible(true);
-			// this->getChildByID("bottom-menu-bg"_spr)->setVisible(true);
-			// this->getChildByID("right-side-menu")->setVisible(true);
-			// this->getChildByID("profile-menu")->setVisible(true);
-			// this->getChildByID("close-menu")->setVisible(true);
-			// this->getChildByID("player-username")->setVisible(true);
 		}
 	}
 
@@ -80,8 +67,6 @@ class $modify(CrazyLayer, MenuLayer) {
 			glm->getLeaderboardScores("leaderboard_global");
 		}
 
-		
-
 		if (auto closeMenu = this->getChildByID("close-menu")) {
 			if (!closeMenu->getChildByID("close-button")) {
 				auto cls_spr = CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png");
@@ -102,14 +87,10 @@ class $modify(CrazyLayer, MenuLayer) {
 			}
 		}
 
-		// MAIN MENU CHANGES (MIGHT BE BREAKING SOME STUFF) - ninXout
-		// no it isn't - Weebify
-
 		this->getChildByID("main-title")->setVisible(false);
-
 		this->getChildByID("more-games-menu")->setVisible(false);
-		this->getChildByID("social-media-menu")->setVisible(false); // might make RobTop logo visible later // no
-		this->getChildByID("main-menu")->setVisible(false); // hehehehe >:D // ????
+		this->getChildByID("social-media-menu")->setVisible(false);
+		this->getChildByID("main-menu")->setVisible(false);
 
 		if (this->getChildByID("level-editor-hint")) this->getChildByID("level-editor-hint")->setVisible(false);
 		if (this->getChildByID("character-select-hint")) this->getChildByID("character-select-hint")->setVisible(false);
@@ -142,11 +123,6 @@ class $modify(CrazyLayer, MenuLayer) {
 		this->getChildByID("profile-menu")->setPosition(ccp(575.5f, 35.f));
 		this->getChildByID("profile-menu")->setScale(0.75f);
 		this->getChildByID("profile-menu")->setZOrder(1);		
-
-		// NEW STUFF YAYY :D - ninXout
-		// yay - Weebify
-
-		// background for the menu on the right (the one with the Geode and settings buttons)
 
 		CCScale9Sprite* bottomMenuBG = CCScale9Sprite::create("square02b_001.png");
 		bottomMenuBG->setID("bottom-menu-bg"_spr);
@@ -306,14 +282,10 @@ class $modify(CrazyLayer, MenuLayer) {
 
 		auto spr1 = CCSprite::create("RD_hideButton_01.png"_spr);
 		auto spr2 = CCSprite::create("RD_hideButton_02.png"_spr);
-		// spr2->setOpacity(50);
 		auto hideToggler = CCMenuItemToggler::create(spr1, spr2, this, menu_selector(CrazyLayer::onHideMenu));
 		hideToggler->setID("hide-button");
 		hideToggler->setPosition({ hideBtnMenu->getContentWidth() / 2.f, hideBtnMenu->getContentHeight() / 2.f });
 		hideBtnMenu->addChild(hideToggler);
-
-
-
 
 		return true;
 	}
