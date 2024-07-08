@@ -2,6 +2,9 @@
 #include <Geode/modify/GameLevelManager.hpp>
 #include "../ui/RDDailyNode.hpp"
 #include "../ui/RDButton.hpp"
+#include <string>
+#include <fmt/format.h>
+
 using namespace geode::prelude;
 
 class $modify(MyGLM, GameLevelManager) {
@@ -10,11 +13,11 @@ class $modify(MyGLM, GameLevelManager) {
         Variables::WeeklyLeft--;
 
         if (Variables::WeeklyLeft < 1) {
-		    GameLevelManager::getGJDailyLevelState(GJTimedLevelType::Weekly);
-		}
-		if (Variables::DailyLeft < 1) {
-		    GameLevelManager::getGJDailyLevelState(GJTimedLevelType::Daily);
-		};
+            GameLevelManager::getGJDailyLevelState(GJTimedLevelType::Weekly);
+        }
+        if (Variables::DailyLeft < 1) {
+            GameLevelManager::getGJDailyLevelState(GJTimedLevelType::Daily);
+        }
     }
 
     void onGetLeaderboardScoresCompleted(gd::string response, gd::string tag) {
@@ -22,9 +25,10 @@ class $modify(MyGLM, GameLevelManager) {
 
         if (response != "-1") {
             if (Variables::GlobalRank != -1) {
-                auto pos = response.find(fmt::format("1:{}", GJAccountManager::get()->m_username));
-                auto pos2 = response.find("|", pos);
-                auto dict = GameLevelManager::responseToDict(response.substr(pos, pos2 - pos), false);
+                std::string response_str = response.c_str(); // Convert gd::string to std::string
+                auto pos = response_str.find(fmt::format("1:{}", GJAccountManager::get()->m_username));
+                auto pos2 = response_str.find("|", pos);
+                auto dict = GameLevelManager::responseToDict(response_str.substr(pos, pos2 - pos), false);
                 Variables::GlobalRank = as<CCString*>(dict->objectForKey("6"))->intValue();
                 Variables::OldStarsCount = GameStatsManager::sharedState()->getStat("6");
 
@@ -36,16 +40,6 @@ class $modify(MyGLM, GameLevelManager) {
             }
         }
     }
-
-    // /* 0x158 0x4 int */ int	m_dailyTimeLeft;
-	// /* 0x15c 0x4 int */ int	m_dailyID;
-    // /* 0x160 0x4 int */ int	m_dailyIDUnk;
-	// /* 0x164 0x4 int */ int	m_weeklyTimeLeft;
-	// /* 0x168 0x4 int */ int	m_weeklyID;
-	// /* 0x16c 0x4 int */ int	m_weeklyIDUnk;
-	// /* 0x170 0x4 int */ int	m_eventTimeLeft;	
-	// /* 0x174 0x4 int */ int	m_eventID;
-	// /* 0x178 0x4 int */ int	m_eventIDUnk;
 
     void processOnDownloadLevelCompleted(gd::string response, gd::string tag, bool p2) {
         GameLevelManager::processOnDownloadLevelCompleted(response, tag, p2);
@@ -76,7 +70,7 @@ class $modify(MyGLM, GameLevelManager) {
                         weeklyNode->setupLevelMenu(level);
                     } else {
                         log::error("where did my level go??");
-                    };
+                    }
                 } else {
                     weeklyNode->downloadLevelFailed();
                 }
@@ -87,7 +81,7 @@ class $modify(MyGLM, GameLevelManager) {
     void onGetGJDailyLevelStateCompleted(gd::string response, gd::string tag) {
         GameLevelManager::onGetGJDailyLevelStateCompleted(response, tag);
 
-        auto responseStd = std::string(response.c_str());
+        std::string responseStd = response.c_str();
         auto timeLeft = std::stoi(responseStd.substr(responseStd.find('|') + 1));
 
         if (response != "-1") {
